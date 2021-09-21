@@ -1,6 +1,6 @@
-# cmcjobfair
+# Kellogg Board Fellows Matching Tool
 
-Currently (March 10, 2021) hosted here: http://jobfairmatcher.kellogg.work/ (using [surge.sh](https://surge.sh/))
+Currently (September 21, 2021) hosted here: http://kbfmatcher.kellogg.work/ using [surge.sh](https://surge.sh/) using an account belonging to @lovingawareness.
 
 ## Project setup
 ```
