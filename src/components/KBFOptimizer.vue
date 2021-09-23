@@ -67,7 +67,7 @@
         <p>
           Download Assignments in CSV: 
           <v-btn
-            @click.stop="save(filename({ avgSatisfaction }), simple.assignments)"
+            @click.stop="save(filename({ avgSatisfaction }), kbf.assignments)"
             color="deep-purple"
             icon
             dark
