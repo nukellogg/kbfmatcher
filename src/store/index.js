@@ -23,12 +23,12 @@ const store = new Vuex.Store({
       // results
       assignments: [],
       avgSatisfaction: null,
+      unrankedValue: 99,
       // options
       fake: {
         students: 50,
         companies: 70,
-        rankingMax: 10,
-        unrankedValue: 99
+        rankingMax: 10
       },
       // status
       isWorking: false
@@ -81,7 +81,7 @@ const store = new Vuex.Store({
       for (var i = 0; i < students.length; i++) {
         let rankings = _.shuffle([
           ..._.range(1, fake.rankingMax + 1),
-          ...Array(companies.length - fake.rankingMax).fill(fake.unrankedValue),
+          ...Array(companies.length - fake.rankingMax).fill(state.kbf.unrankedValue),
         ]);
         matrix.push([students[i], ...rankings]);
       }
@@ -97,8 +97,8 @@ const store = new Vuex.Store({
       let companies = firstRow.slice(1, firstRow.length);
       let firstColumn = data.map(row => row[0]);
       let students = firstColumn.slice(1, firstColumn.length);
-      let rankings = data.slice(1, data.length)
-        .map(row => row.slice(1, row.length))
+      let rankings = data.slice(1, data.length) // Ignore the first row
+        .map(row => row.slice(1, row.length))   // Ignore the first column
         .map(row => row.map(item => item.trim() ? item : state.kbf.unrankedValue))
         .map(row => row.map(item => parseInt(item)));
       commit('setCompaniesKBF', companies);
