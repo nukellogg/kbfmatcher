@@ -91,17 +91,6 @@ onmessage = e => {
     payload
   } = e.data;
   switch (action) {
-    case 'computeAssignmentsJobFair':
-      self.postMessage({
-        mutation: 'SET_WORKING_JOBFAIR',
-        payload: true
-      });
-      computeAssignmentsJobFair(self, payload);
-      self.postMessage({
-        mutation: 'SET_WORKING_JOBFAIR',
-        payload: false
-      });
-      break;
     case 'computeAssignmentsKBF':
       self.postMessage({
         mutation: 'SET_WORKING_KBF',
