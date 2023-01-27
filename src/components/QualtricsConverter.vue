@@ -20,18 +20,17 @@
                 <v-spacer></v-spacer>
                 <v-col cols="12" md="12">
                   <p>
-                    This will convert a Qualtrics Survey output CSV file
-                    with a single rank order question to a rankings matrix,
-                    like the matrix needed for
-                    <router-link to="/">this interview matcher</router-link
-                    >. As of March 2021, to get the CSV output from
-                    Qualtrics: go to the survey, click on the Data &amp;
-                    Analysis tab, press the "Export &amp; Import" button,
-                    "Export", choose "CSV" / "Download all fields" / "Use
-                    choice text", click "Download". Open this CSV file in
-                    Microsoft Excel or Apple Numbers, select all cells and
-                    copy them, and paste into the Qualtrics Input textarea
-                    below.
+                    This will convert a Qualtrics Survey output CSV file with a
+                    single rank order question to a rankings matrix, like the
+                    matrix needed for
+                    <router-link to="/">this interview matcher</router-link>. As
+                    of March 2021, to get the CSV output from Qualtrics: go to
+                    the survey, click on the Data &amp; Analysis tab, press the
+                    "Export &amp; Import" button, "Export", choose "CSV" /
+                    "Download all fields" / "Use choice text", click "Download".
+                    Open this CSV file in Microsoft Excel or Apple Numbers,
+                    select all cells and copy them, and paste into the Qualtrics
+                    Input textarea below.
                   </p>
                 </v-col>
                 <v-spacer></v-spacer>
@@ -100,8 +99,7 @@
         <h3>Student Identifiers</h3>
         <h4>
           These should be unique. If you see duplicates, edit the Qualtrics
-          output CSV to remove the duplicate students before converting
-          here.
+          output CSV to remove the duplicate students before converting here.
         </h4>
         <ol>
           <li v-for="(student, i) in studentNames" v-bind:key="i">
@@ -141,9 +139,9 @@
 </template>
 
 <script>
-import Vue from "vue"
-import * as Papa from "papaparse"
-import { exampleInput, exampleOutput } from "@/data/converter-example.json"
+import Vue from "vue";
+import * as Papa from "papaparse";
+import { exampleInput, exampleOutput } from "@/data/converter-example.json";
 
 export default Vue.extend({
   name: "Qualtrics",
@@ -157,7 +155,7 @@ export default Vue.extend({
       dataStartRow: 3,
       csvRankingsMatrix: "",
       companyRegExpString:
-        "(?<=- Ranks - My Top 10 - )(?<company>.*)(?= - Rank)",
+        "(?<=- Ranks - Top 5 Choices in Order -)(?<company>.*)(?= - Rank)",
       parsedQualtricsCsv: [],
       columnLabels: [],
       questionTexts: [],
@@ -167,100 +165,134 @@ export default Vue.extend({
       companyNames: [],
       studentIdColNumber: null,
       studentIdColumn: null,
-    }
+    };
   },
   watch: {
     csvQualtricsInput: function() {
-      this.convert()
+      this.convert();
     },
   },
   created() {
-    document.title = "Kellogg CMC Job Fair Interview Optimizer"
+    document.title = "Kellogg CMC Job Fair Interview Optimizer";
   },
   methods: {
     __parsedQualtricsCsv() {
-      return Papa.parse(this.csvQualtricsInput).data
+      return Papa.parse(this.csvQualtricsInput).data;
     },
 
     __columnLabels() {
-      return this.parsedQualtricsCsv[0]
-    },
-
-    __questionTexts() {
-      return this.parsedQualtricsCsv[this.questionTextRow]
-    },
-
-    __students() {
-      let data = this.parsedQualtricsCsv
-      this.studentIdColNumber = this.columnLabels.indexOf(
-        this.studentIdColLabel
-      )
-      this.studentIdColumn = data.map((row) => row[this.studentIdColNumber])
-      let students = []
-      for (
-        let row = this.dataStartRow;
-        row < this.studentIdColumn.length;
-        row++
-      ) {
-        let name = this.studentIdColumn[row]
-        if (name && name.length > 0) {
-          students.push({ name, row })
-        }
-      }
-      return students
-    },
-
-    __studentNames() {
-      return this.students.map((s) => s.name)
+      return this.parsedQualtricsCsv[0];
     },
 
     __companies() {
+      let data = this.parsedQualtricsCsv;
       let companies = [];
-      let companyRegExp = new RegExp(this.companyRegExpString);
-      for (let i = 0; i < this.questionTexts.length; i++) {
-        let questionText = this.questionTexts[i]
-        if (questionText.match(companyRegExp)) {
-          companies.push({
-            name: questionText.match(companyRegExp).groups.company,
-            column: i,
-          })
+      for (let i = 2; i < data.length; i++) {
+        for (let j = 19; j < 24; j++) {
+          let company = data[i][j];
+          if (company && !companies.includes(company)) {
+            companies.push(company);
+          }
         }
       }
-      return companies
+      return companies;
     },
 
-    __companyNames() {
-      return this.companies.map((c) => c.name)
+    __studentCompaniesMap() {
+      let data = this.parsedQualtricsCsv;
+      let studentCompaniesMap = {};
+      for (let i = 2; i < data.length; i++) {
+        let student_name = data[i][17] + " " + data[i][18];
+        let companies = [];
+        for (let j = 19; j < 24; j++) {
+          companies.push(data[i][j]);
+        }
+        studentCompaniesMap[student_name] = companies;
+      }
+      return studentCompaniesMap;
     },
 
     __rankingsMatrix() {
-      let output = []
-      let firstRow = ["Student ID", ...this.companyNames]
-      output.push(firstRow)
-      for (var i = 0; i < this.students.length; i++) {
-        let student = this.students[i].name
-        let row = this.students[i].row
-        let outputRow = [student]
-        for (var j = 0; j < this.companies.length; j++) {
-          let column = this.companies[j].column
-          let ranking = this.parsedQualtricsCsv[row][column]
-          outputRow.push(ranking)
+      let output = [];
+      let header = ["Student ID", ...this.companies];
+      output.push(header);
+
+      for (let student in this.studentCompaniesMap) {
+        let row = [student];
+        for (let company of this.companies) {
+          let ranking = this.studentCompaniesMap[student].indexOf(company) + 1;
+          row.push(ranking);
         }
-        output.push(outputRow)
+        output.push(row);
       }
+
       return output;
     },
 
     convert() {
-      this.parsedQualtricsCsv = this.__parsedQualtricsCsv()
-      this.columnLabels = this.__columnLabels()
-      this.questionTexts = this.__questionTexts()
-      this.students = this.__students()
-      this.studentNames = this.__studentNames()
-      this.companies = this.__companies()
-      this.companyNames = this.__companyNames()
-      this.csvRankingsMatrix = Papa.unparse(this.__rankingsMatrix())
+      this.parsedQualtricsCsv = this.__parsedQualtricsCsv();
+      this.columnLabels = this.__columnLabels();
+      this.studentCompaniesMap = this.__studentCompaniesMap();
+      this.companies = this.__companies();
+      this.output = this.__rankingsMatrix();
+
+      this.csvRankingsMatrix = Papa.unparse(this.__rankingsMatrix());
+      console.log(this.csvRankingsMatrix);
     },
+    // __questionTexts() {
+    //   return this.parsedQualtricsCsv[this.questionTextRow];
+    // },
+
+    // __students() {
+    //   let data = this.parsedQualtricsCsv;
+    //   this.studentIdColNumber = this.columnLabels.indexOf(
+    //     this.studentIdColLabel
+    //   );
+    //   this.studentIdColumn = data.map((row) => row[this.studentIdColNumber]);
+    //   let students = [];
+    //   for (
+    //     let row = this.dataStartRow;
+    //     row < this.studentIdColumn.length;
+    //     row++
+    //   ) {
+    //     let name = this.studentIdColumn[row];
+    //     if (name && name.length > 0) {
+    //       students.push({ name, row });
+    //     }
+    //   }
+    //   return students;
+    // },
+
+    // __studentNames() {
+    //   return this.students.map((s) => s.name);
+    // },
+
+    // __companies() {
+    //   let companies = [];
+    //   for (let i = 2; i < this.parsedQualtricsCsv.length; i++) {
+    //     for (let j = 19; j < 24; j++) {
+    //       companies.push({
+    //         name: this.parsedQualtricsCsv[i][j],
+    //         column: i,
+    //       });
+    //     }
+    //   }
+    //   // let companyRegExp = new RegExp(this.companyRegExpString);
+    //   // for (let i = 0; i < this.questionTexts.length; i++) {
+    //   //   let questionText = this.questionTexts[i];
+    //   //   if (questionText.match(companyRegExp)) {
+    //   //     companies.push({
+    //   //       name: questionText.match(companyRegExp).groups.company,
+    //   //       column: i,
+    //   //     });
+    //   //   }
+    //   // }
+    //   return companies;
+    // },
+
+    // __companyNames() {
+    //   return this.companies.map((c) => c.name);
+    // },
   },
-})
+});
 </script>
