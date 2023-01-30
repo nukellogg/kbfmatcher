@@ -102,7 +102,10 @@
           output CSV to remove the duplicate students before converting here.
         </h4>
         <ol>
-          <li v-for="(student, i) in studentNames" v-bind:key="i">
+          <li
+            v-for="(student, i) in Object.keys(studentCompaniesMap)"
+            v-bind:key="i"
+          >
             {{ student }}
           </li>
         </ol>
@@ -110,7 +113,7 @@
       <v-col cols="6" md="5">
         <h3>Companies</h3>
         <ol>
-          <li v-for="(company, i) in companyNames" v-bind:key="i">
+          <li v-for="(company, i) in companies" v-bind:key="i">
             {{ company }}
           </li>
         </ol>
@@ -161,6 +164,7 @@ export default Vue.extend({
       questionTexts: [],
       students: [],
       studentNames: [],
+      studentCompaniesMap: {},
       companies: [],
       companyNames: [],
       studentIdColNumber: null,
@@ -203,11 +207,13 @@ export default Vue.extend({
       let studentCompaniesMap = {};
       for (let i = 2; i < data.length; i++) {
         let student_name = data[i][17] + " " + data[i][18];
-        let companies = [];
-        for (let j = 19; j < 24; j++) {
-          companies.push(data[i][j]);
+        if (student_name != "undefined undefined") {
+          let companies = [];
+          for (let j = 19; j < 24; j++) {
+            companies.push(data[i][j]);
+          }
+          studentCompaniesMap[student_name] = companies;
         }
-        studentCompaniesMap[student_name] = companies;
       }
       return studentCompaniesMap;
     },
@@ -221,6 +227,9 @@ export default Vue.extend({
         let row = [student];
         for (let company of this.companies) {
           let ranking = this.studentCompaniesMap[student].indexOf(company) + 1;
+          if (ranking == 0) {
+            ranking = "";
+          }
           row.push(ranking);
         }
         output.push(row);
