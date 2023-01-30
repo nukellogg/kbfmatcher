@@ -71,27 +71,6 @@
     </v-row>
     <v-row>
       <v-spacer></v-spacer>
-      <v-col cols="6" md="4">
-        <v-text-field
-          label="Column Heading where student identifiers are located"
-          v-model="studentIdColLabel"
-        ></v-text-field>
-      </v-col>
-      <v-col cols="3" md="3">
-        <v-text-field
-          label="Row where question text shows up"
-          type="number"
-          v-model="questionTextRow"
-        ></v-text-field>
-      </v-col>
-      <v-col cols="3" md="3">
-        <v-text-field
-          label="Row where data starts"
-          type="number"
-          v-model="dataStartRow"
-        ></v-text-field>
-      </v-col>
-      <v-spacer></v-spacer>
     </v-row>
     <v-row>
       <v-spacer></v-spacer>
@@ -153,22 +132,10 @@ export default Vue.extend({
       exampleInput: exampleInput,
       exampleOutput: exampleOutput,
       csvQualtricsInput: "",
-      studentIdColLabel: "Q2",
-      questionTextRow: 1,
-      dataStartRow: 3,
       csvRankingsMatrix: "",
-      companyRegExpString:
-        "(?<=- Ranks - Top 5 Choices in Order -)(?<company>.*)(?= - Rank)",
       parsedQualtricsCsv: [],
-      columnLabels: [],
-      questionTexts: [],
-      students: [],
-      studentNames: [],
       studentCompaniesMap: {},
       companies: [],
-      companyNames: [],
-      studentIdColNumber: null,
-      studentIdColumn: null,
     };
   },
   watch: {
@@ -182,10 +149,6 @@ export default Vue.extend({
   methods: {
     __parsedQualtricsCsv() {
       return Papa.parse(this.csvQualtricsInput).data;
-    },
-
-    __columnLabels() {
-      return this.parsedQualtricsCsv[0];
     },
 
     __companies() {
@@ -240,68 +203,11 @@ export default Vue.extend({
 
     convert() {
       this.parsedQualtricsCsv = this.__parsedQualtricsCsv();
-      this.columnLabels = this.__columnLabels();
       this.studentCompaniesMap = this.__studentCompaniesMap();
       this.companies = this.__companies();
       this.output = this.__rankingsMatrix();
-
       this.csvRankingsMatrix = Papa.unparse(this.__rankingsMatrix());
-      console.log(this.csvRankingsMatrix);
     },
-    // __questionTexts() {
-    //   return this.parsedQualtricsCsv[this.questionTextRow];
-    // },
-
-    // __students() {
-    //   let data = this.parsedQualtricsCsv;
-    //   this.studentIdColNumber = this.columnLabels.indexOf(
-    //     this.studentIdColLabel
-    //   );
-    //   this.studentIdColumn = data.map((row) => row[this.studentIdColNumber]);
-    //   let students = [];
-    //   for (
-    //     let row = this.dataStartRow;
-    //     row < this.studentIdColumn.length;
-    //     row++
-    //   ) {
-    //     let name = this.studentIdColumn[row];
-    //     if (name && name.length > 0) {
-    //       students.push({ name, row });
-    //     }
-    //   }
-    //   return students;
-    // },
-
-    // __studentNames() {
-    //   return this.students.map((s) => s.name);
-    // },
-
-    // __companies() {
-    //   let companies = [];
-    //   for (let i = 2; i < this.parsedQualtricsCsv.length; i++) {
-    //     for (let j = 19; j < 24; j++) {
-    //       companies.push({
-    //         name: this.parsedQualtricsCsv[i][j],
-    //         column: i,
-    //       });
-    //     }
-    //   }
-    //   // let companyRegExp = new RegExp(this.companyRegExpString);
-    //   // for (let i = 0; i < this.questionTexts.length; i++) {
-    //   //   let questionText = this.questionTexts[i];
-    //   //   if (questionText.match(companyRegExp)) {
-    //   //     companies.push({
-    //   //       name: questionText.match(companyRegExp).groups.company,
-    //   //       column: i,
-    //   //     });
-    //   //   }
-    //   // }
-    //   return companies;
-    // },
-
-    // __companyNames() {
-    //   return this.companies.map((c) => c.name);
-    // },
   },
 });
 </script>
