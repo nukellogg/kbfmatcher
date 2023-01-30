@@ -152,6 +152,16 @@ export default Vue.extend({
     },
 
     __companies() {
+      // This code loops through the CSV data and adds each company to a list of companies and returns it.
+      // The variable 'companies' holds the list of companies.
+      // The variable 'company' holds the name of the company.
+      // The variable 'data' holds the CSV data.
+      // The variable 'i' loops through the rows of the CSV data.
+      // 'i' starts at 2 because the first two rows are the header row.
+      // The variable 'j' loops through the columns of the CSV data.
+      // 'j' Starts at 19 because the first 18 columns are not company names.
+      // The variables 'i' and 'j' will be replaced eventually with user input.
+
       let data = this.parsedQualtricsCsv;
       let companies = [];
       for (let i = 2; i < data.length; i++) {
@@ -166,6 +176,27 @@ export default Vue.extend({
     },
 
     __studentCompaniesMap() {
+      // This code loops through the CSV data and creates a map of students to companies.
+      // Specifically, it is matching students to the companies they ranked where the student
+      // name is the key, and the value is a list of companies in the order they ranked them.
+
+      // The variable 'data' holds the CSV data.
+      // The variable 'studentCompaniesMap' holds the map of students to companies.
+
+      // The variable 'student_name' holds the name of the student.
+      // We reference data[i][17] and data[i][18] because the student name is in the 17th and 18th columns.
+      // For future proofing, 'i' and the correspeonding value will be supplied by the user
+      // in the future.
+
+      // The variable 'companies' holds the list of companies.
+
+      // The variable 'i' loops through the rows of the CSV data.
+      // 'i' starts at 2 because the first two rows are the header row.
+      // The variable 'j' loops through the columns of the CSV data.
+      // 'j' Starts at 19 because the first 18 columns are not company names.
+
+      // The variables 'i' and 'j' will be replaced eventually with user input.
+
       let data = this.parsedQualtricsCsv;
       let studentCompaniesMap = {};
       for (let i = 2; i < data.length; i++) {
@@ -182,6 +213,20 @@ export default Vue.extend({
     },
 
     __rankingsMatrix() {
+      // This code loops through the studentCompaniesMap and creates a matrix of rankings.
+
+      // The variable 'output' holds the rankings matrix.
+      // The variable 'header' holds the header row of the rankings matrix.
+      // The variable 'row' holds the current row of the rankings matrix.
+      // The variable 'student' holds the name of the student.
+      // The variable 'company' holds the name of the company.
+      // The variable 'ranking' holds the ranking of the company for the student.
+      // The variable 'studentCompaniesMap' holds the map of students to companies.
+      // The variable 'companies' holds the list of companies.
+
+      // Due to the companies being inserted into the map in the order they were ranked,
+      // the ranking is the index of the company in the associated list of companies plus 1.
+
       let output = [];
       let header = ["Student ID", ...this.companies];
       output.push(header);
