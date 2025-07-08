@@ -20,7 +20,7 @@ It is a bit wonky in terms of the process, but it’s essentially:
 1. Select all cells and copy.
 1. Open this Qualtrics Converter page (http://kbfmatcher.kellogg.work/qualtrics) and paste into the “Qualtrics Input (CSV)” text area.
 1. Scroll down to the “Rankings Matrix Output (CSV)”, select everything in that text area, and copy.
-1. Open the main Optimizer page ([[[[http://kbfmatcher.kellogg.work/](https://kbfoptimizer.apps.kellogg.northwestern.edu/)](https://kbfoptimizer.apps.kellogg.northwestern.edu/)](https://kbfoptimizer.apps.kellogg.northwestern.edu/)](https://kbfoptimizer.apps.kellogg.northwestern.edu/)) and paste into the “CSV/TSV of Student Rankings of Companies”.
+1. Open the main Optimizer page (https://kbfoptimizer.apps.kellogg.northwestern.edu/)](https://kbfoptimizer.apps.kellogg.northwestern.edu/) and paste into the “CSV/TSV of Student Rankings of Companies”.
 1. Press the “FIND ASSIGNMENTS” button.
 1. The assignments will show below in a table, along with a download link to a new CSV with the assignments there. The name of the CSV file indicates the average ranking of the matches, with the closer to 1 meaning more people got their first choice or very close to it.
 
