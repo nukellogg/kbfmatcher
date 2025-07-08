@@ -1,0 +1,7 @@
+version: "3.8"
+services:
+  kbf:
+    image: kbfoptimizer:latest
+    container_name: kbf
+    ports:
+      - "8080:80"

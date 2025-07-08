@@ -24,12 +24,7 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar
-      color="deep-purple"
-      fixed
-      app
-      dark
-    >
+    <v-app-bar color="deep-purple" fixed app dark>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title>{{ appTitle }}</v-toolbar-title>
     </v-app-bar>
@@ -37,8 +32,8 @@
 </template>
 
 <script>
-import Vue from 'vue'
-import kelloggConfetti from '@/utils/kellogg-confetti'
+import Vue from "vue";
+import kelloggConfetti from "@/utils/kellogg-confetti";
 
 export default Vue.extend({
   data() {
@@ -49,21 +44,26 @@ export default Vue.extend({
         {
           text: "KBF Optimizer",
           icon: "mdi-square-root",
-          route: "/"
+          route: "/",
         },
         {
           text: "Qualtrics Converter",
           icon: "mdi-database-cog",
           route: "/qualtrics",
         },
+        {
+          text: "Video",
+          icon: "mdi-video",
+          route: "/video",
+        },
       ],
-    }
+    };
   },
   methods: {
     celebrate() {
-      kelloggConfetti(0.5)
-    }
-  }
+      kelloggConfetti(0.5);
+    },
+  },
 });
 </script>
 
