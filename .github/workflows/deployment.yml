@@ -28,10 +28,10 @@ jobs:
       - name: Azure Login with Client Secret
         uses: azure/login@v1
         with:
-          client-id: ${{ secrets.CAM_AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.CAM_AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.CAM_AZURE_SUBSCRIPTION_ID }}
-          client-secret: ${{ secrets.CAM_AZURE_CLIENT_SECRET }} 
+          client-id: ${{ secrets.KSMMATCHING_AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.KSMMATCHING_AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.KSMMATCHING_AZURE_SUBSCRIPTION_ID }}
+          client-secret: ${{ secrets.KSMMATCHING_AZURE_CLIENT_SECRET }} 
 
       - name: Log in to Azure Container Registry (ACR)
         run: |
