@@ -1,20 +1,13 @@
-FROM node:16.13.0-alpine
-
-# Set working directory
-WORKDIR /usr/src/app
-
-# Ensure npm uses official registry
-RUN npm config set registry https://registry.npmjs.org/
-
-# Copy package files and install dependencies
+FROM node:16-alpine AS build-stage
+WORKDIR /app
 COPY package*.json ./
 RUN npm install
-
-# Copy the rest of the app
 COPY . .
+RUN npm run build
 
-# Expose app port
-EXPOSE 3000
+FROM nginx:stable-alpine as production-stage
+COPY --from=build-stage /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
 
-# Start the app
-CMD ["npm", "start"]
+CMD ["nginx", "-g", "daemon off;"]
