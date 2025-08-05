@@ -1,11 +1,10 @@
-
-name: Trigger auto deployment for kbfmatcher-dev
+name: Trigger auto deployment for kbfmatcher
 
 # When this action will be executed
 on:
   push:
     branches: 
-      [ dev ]
+      [ main ]
     paths:
     - '**'
     - '.github/workflows/deployment.yml'
@@ -40,12 +39,11 @@ jobs:
       # Build and Push Docker Image
       - name: Build and Push Image
         run: |
-          docker build --no-cache -t ksmacr.azurecr.io/kbfmatcher-dev:${{ github.sha }} ./
-          docker push ksmacr.azurecr.io/kbfmatcher-dev:${{ github.sha }}
-
+          docker build --no-cache -t ksmacr.azurecr.io/kbfmatcher-prod:${{ github.sha }} ./
+          docker push ksmacr.azurecr.io/kbfmatcher-prod:${{ github.sha }}
       - name: Deploy to Azure Container Apps
         run: |
           az containerapp update \
-            --name kbfmatcher-dev \
+            --name kbfmatcher-prod \
             --resource-group KSM_Teaching_RG \
-            --image ksmacr.azurecr.io/kbfmatcher-dev:${{ github.sha }} \
+            --image ksmacr.azurecr.io/kbfmatcher-prod:${{ github.sha }} \
